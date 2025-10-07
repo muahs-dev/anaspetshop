@@ -14,7 +14,221 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      appointments: {
+        Row: {
+          appointment_date: string
+          created_at: string | null
+          id: string
+          pet_id: string
+          service_type: Database["public"]["Enums"]["service_type"]
+          status: Database["public"]["Enums"]["appointment_status"]
+          updated_at: string | null
+        }
+        Insert: {
+          appointment_date: string
+          created_at?: string | null
+          id?: string
+          pet_id: string
+          service_type: Database["public"]["Enums"]["service_type"]
+          status?: Database["public"]["Enums"]["appointment_status"]
+          updated_at?: string | null
+        }
+        Update: {
+          appointment_date?: string
+          created_at?: string | null
+          id?: string
+          pet_id?: string
+          service_type?: Database["public"]["Enums"]["service_type"]
+          status?: Database["public"]["Enums"]["appointment_status"]
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clients: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          emergency_contact: string | null
+          full_name: string
+          id: string
+          phone: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          emergency_contact?: string | null
+          full_name: string
+          id?: string
+          phone: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          emergency_contact?: string | null
+          full_name?: string
+          id?: string
+          phone?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      pets: {
+        Row: {
+          behavior_notes: string | null
+          birth_date: string | null
+          breed: string | null
+          client_id: string
+          created_at: string | null
+          health_notes: string | null
+          id: string
+          name: string
+          photo_url: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          behavior_notes?: string | null
+          birth_date?: string | null
+          breed?: string | null
+          client_id: string
+          created_at?: string | null
+          health_notes?: string | null
+          id?: string
+          name: string
+          photo_url?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          behavior_notes?: string | null
+          birth_date?: string | null
+          breed?: string | null
+          client_id?: string
+          created_at?: string | null
+          health_notes?: string | null
+          id?: string
+          name?: string
+          photo_url?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pets_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          email: string
+          full_name: string
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          full_name: string
+          id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      transactions: {
+        Row: {
+          amount: number
+          charge_date: string
+          client_id: string
+          created_at: string | null
+          description: string
+          id: string
+          payment_status: Database["public"]["Enums"]["payment_status"]
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          charge_date: string
+          client_id: string
+          created_at?: string | null
+          description: string
+          id?: string
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          charge_date?: string
+          client_id?: string
+          created_at?: string | null
+          description?: string
+          id?: string
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vaccines: {
+        Row: {
+          created_at: string | null
+          expiry_date: string
+          id: string
+          pet_id: string
+          updated_at: string | null
+          vaccine_name: string
+        }
+        Insert: {
+          created_at?: string | null
+          expiry_date: string
+          id?: string
+          pet_id: string
+          updated_at?: string | null
+          vaccine_name: string
+        }
+        Update: {
+          created_at?: string | null
+          expiry_date?: string
+          id?: string
+          pet_id?: string
+          updated_at?: string | null
+          vaccine_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vaccines_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +237,9 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      appointment_status: "Agendado" | "Presente" | "Finalizado" | "Cancelado"
+      payment_status: "Pendente" | "Pago"
+      service_type: "Creche" | "Hotel" | "Banho"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +366,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      appointment_status: ["Agendado", "Presente", "Finalizado", "Cancelado"],
+      payment_status: ["Pendente", "Pago"],
+      service_type: ["Creche", "Hotel", "Banho"],
+    },
   },
 } as const
