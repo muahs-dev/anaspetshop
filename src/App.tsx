@@ -8,14 +8,56 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
+import { useUserRole } from "@/hooks/useUserRole";
 import Dashboard from "./pages/Dashboard";
 import Clients from "./pages/Clients";
 import Appointments from "./pages/Appointments";
 import Financial from "./pages/Financial";
 import Auth from "./pages/Auth";
+import AccessPending from "./pages/AccessPending";
+import UserManagement from "./pages/UserManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
+
+const AuthenticatedApp = () => {
+  const { role, loading: roleLoading } = useUserRole();
+
+  if (roleLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">Carregando...</div>
+      </div>
+    );
+  }
+
+  if (!role) {
+    return <AccessPending />;
+  }
+
+  return (
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar />
+        <div className="flex-1 flex flex-col">
+          <header className="h-14 flex items-center border-b px-4 bg-background">
+            <SidebarTrigger />
+          </header>
+          <main className="flex-1 p-6 overflow-auto">
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/clients" element={<Clients />} />
+              <Route path="/appointments" element={<Appointments />} />
+              <Route path="/financial" element={<Financial />} />
+              {role === "admin" && <Route path="/users" element={<UserManagement />} />}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </main>
+        </div>
+      </div>
+    </SidebarProvider>
+  );
+};
 
 const App = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -58,25 +100,7 @@ const App = () => {
               <Route path="*" element={<Navigate to="/auth" replace />} />
             </Routes>
           ) : (
-            <SidebarProvider>
-              <div className="min-h-screen flex w-full">
-                <AppSidebar />
-                <div className="flex-1 flex flex-col">
-                  <header className="h-14 flex items-center border-b px-4 bg-background">
-                    <SidebarTrigger />
-                  </header>
-                  <main className="flex-1 p-6 overflow-auto">
-                    <Routes>
-                      <Route path="/" element={<Dashboard />} />
-                      <Route path="/clients" element={<Clients />} />
-                      <Route path="/appointments" element={<Appointments />} />
-                      <Route path="/financial" element={<Financial />} />
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </main>
-                </div>
-              </div>
-            </SidebarProvider>
+            <AuthenticatedApp />
           )}
         </BrowserRouter>
       </TooltipProvider>

@@ -1,8 +1,9 @@
-import { Home, Users, Calendar, DollarSign, LogOut, Dog } from "lucide-react";
+import { Home, Users, Calendar, DollarSign, LogOut, Dog, UserCog } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useUserRole } from "@/hooks/useUserRole";
 import {
   Sidebar,
   SidebarContent,
@@ -16,18 +17,27 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const menuItems = [
+const baseMenuItems = [
   { title: "Dashboard", url: "/", icon: Home },
   { title: "Clientes & Pets", url: "/clients", icon: Users },
   { title: "Agendamentos", url: "/appointments", icon: Calendar },
   { title: "Financeiro", url: "/financial", icon: DollarSign },
 ];
 
+const adminMenuItems = [
+  { title: "Gerenciar Usuários", url: "/users", icon: UserCog },
+];
+
 export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
   const navigate = useNavigate();
+  const { isAdmin } = useUserRole();
   const currentPath = location.pathname;
+
+  const menuItems = isAdmin 
+    ? [...baseMenuItems, ...adminMenuItems]
+    : baseMenuItems;
 
   const isActive = (path: string) => currentPath === path;
   const isCollapsed = state === "collapsed";
