@@ -6,9 +6,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { InstallPWA } from "@/components/InstallPWA";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { useUserRole } from "@/hooks/useUserRole";
+import { registerServiceWorker } from "@/utils/registerSW";
 import Dashboard from "./pages/Dashboard";
 import Clients from "./pages/Clients";
 import Appointments from "./pages/Appointments";
@@ -60,6 +62,9 @@ const App = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Register service worker for PWA
+    registerServiceWorker();
+
     // Check active session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
@@ -89,6 +94,7 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <InstallPWA />
         <BrowserRouter>
           {!user ? (
             <Routes>
