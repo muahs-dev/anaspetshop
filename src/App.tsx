@@ -31,10 +31,6 @@ const AuthenticatedApp = () => {
     );
   }
 
-  if (!role) {
-    return <AccessPending />;
-  }
-
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
