@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Calendar as CalendarIcon, Plus } from "lucide-react";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
+import { NewAppointmentDialog } from "@/components/NewAppointmentDialog";
 
 const Appointments = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -72,10 +73,7 @@ const Appointments = () => {
           <h1 className="text-3xl font-bold">Agendamentos</h1>
           <p className="text-muted-foreground">Gerencie os agendamentos da creche</p>
         </div>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          Novo Agendamento
-        </Button>
+        <NewAppointmentDialog onAppointmentAdded={fetchAppointments} />
       </div>
 
       <div className="grid gap-6 md:grid-cols-[300px_1fr]">

@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { NewClientDialog } from "@/components/NewClientDialog";
 
 const Clients = () => {
   const navigate = useNavigate();
@@ -46,10 +46,7 @@ const Clients = () => {
           <h1 className="text-3xl font-bold">Clientes & Pets</h1>
           <p className="text-muted-foreground">Gerencie seus clientes e seus pets</p>
         </div>
-        <Button onClick={() => navigate("/clients/new")} className="gap-2">
-          <Plus className="h-4 w-4" />
-          Novo Cliente
-        </Button>
+        <NewClientDialog onClientAdded={fetchClients} />
       </div>
 
       <div className="relative">
