@@ -19,6 +19,7 @@ export const NewClientDialog = ({ onClientAdded }: NewClientDialogProps) => {
     phone: "",
     email: "",
     emergency_contact: "",
+    pet_name: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,17 +32,43 @@ export const NewClientDialog = ({ onClientAdded }: NewClientDialogProps) => {
 
     setLoading(true);
 
-    const { error } = await supabase.from("clients").insert([formData]);
+    const { data: clientData, error: clientError } = await supabase
+      .from("clients")
+      .insert([{
+        full_name: formData.full_name,
+        phone: formData.phone,
+        email: formData.email,
+        emergency_contact: formData.emergency_contact,
+      }])
+      .select()
+      .single();
 
-    if (error) {
+    if (clientError) {
       toast.error("Erro ao cadastrar cliente");
-      console.error(error);
-    } else {
-      toast.success("Cliente cadastrado com sucesso!");
-      setFormData({ full_name: "", phone: "", email: "", emergency_contact: "" });
-      setOpen(false);
-      onClientAdded?.();
+      console.error(clientError);
+      setLoading(false);
+      return;
     }
+
+    // Se tem nome do pet, cadastrar o pet também
+    if (formData.pet_name && clientData) {
+      const { error: petError } = await supabase
+        .from("pets")
+        .insert([{
+          name: formData.pet_name,
+          client_id: clientData.id,
+        }]);
+
+      if (petError) {
+        toast.error("Cliente cadastrado, mas erro ao cadastrar pet");
+        console.error(petError);
+      }
+    }
+
+    toast.success("Cliente cadastrado com sucesso!");
+    setFormData({ full_name: "", phone: "", email: "", emergency_contact: "", pet_name: "" });
+    setOpen(false);
+    onClientAdded?.();
 
     setLoading(false);
   };
@@ -97,6 +124,16 @@ export const NewClientDialog = ({ onClientAdded }: NewClientDialogProps) => {
               type="tel"
               value={formData.emergency_contact}
               onChange={(e) => setFormData({ ...formData, emergency_contact: e.target.value })}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="pet_name">Nome do Pet</Label>
+            <Input
+              id="pet_name"
+              value={formData.pet_name}
+              onChange={(e) => setFormData({ ...formData, pet_name: e.target.value })}
+              placeholder="Opcional"
             />
           </div>
 

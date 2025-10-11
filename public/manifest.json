@@ -1,7 +1,7 @@
 {
-  "name": "ANASPETSHOP - Gestão de Creche",
+  "name": "ANASPETSHOP",
   "short_name": "ANASPET",
-  "description": "Sistema de gestão para creche de cães ANASPETSHOP",
+  "description": "Sistema de gestão ANASPETSHOP",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

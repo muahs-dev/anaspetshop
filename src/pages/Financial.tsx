@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { NewTransactionDialog } from "@/components/NewTransactionDialog";
 
 const Financial = () => {
   const navigate = useNavigate();
@@ -62,9 +62,12 @@ const Financial = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Financeiro</h1>
-        <p className="text-muted-foreground">Gerencie pagamentos e cobranças</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Financeiro</h1>
+          <p className="text-muted-foreground">Gerencie pagamentos e cobranças</p>
+        </div>
+        <NewTransactionDialog onTransactionAdded={fetchClientsWithTransactions} />
       </div>
 
       <div className="relative">
