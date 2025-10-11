@@ -1,7 +1,6 @@
-const CACHE_NAME = 'anaspetshop-v1';
+const CACHE_NAME = 'anaspetshop-v2';
 const urlsToCache = [
   '/',
-  '/index.html',
   '/manifest.json',
   '/icon-192x192.png',
   '/icon-512x512.png'
@@ -31,20 +30,36 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  const url = new URL(request.url);
+
+  // Network-first strategy for JS/CSS modules to avoid React conflicts
+  if (request.url.includes('node_modules') || 
+      request.url.includes('.js') || 
+      request.url.includes('.tsx') ||
+      request.url.includes('.css')) {
+    event.respondWith(
+      fetch(request)
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
+
+  // Cache-first for static assets
   event.respondWith(
-    caches.match(event.request)
+    caches.match(request)
       .then((response) => {
         if (response) {
           return response;
         }
-        return fetch(event.request).then((response) => {
-          if (!response || response.status !== 200 || response.type !== 'basic') {
+        return fetch(request).then((response) => {
+          if (!response || response.status !== 200) {
             return response;
           }
           const responseToCache = response.clone();
           caches.open(CACHE_NAME)
             .then((cache) => {
-              cache.put(event.request, responseToCache);
+              cache.put(request, responseToCache);
             });
           return response;
         });
