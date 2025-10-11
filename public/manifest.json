@@ -1,11 +1,11 @@
 {
-  "name": "ANASPETSHOP",
-  "short_name": "ANASPET",
-  "description": "Sistema de gestão ANASPETSHOP",
+  "name": "Mari & Ana Hotel e Pet Creche",
+  "short_name": "Mari & Ana",
+  "description": "Sistema de gestão Mari & Ana Hotel e Pet Creche",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#8B5CF6",
+  "theme_color": "#1A9DB5",
   "orientation": "portrait-primary",
   "scope": "/",
   "icons": [
