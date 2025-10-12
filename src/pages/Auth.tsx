@@ -15,6 +15,8 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [userType, setUserType] = useState<"client" | "staff">("client");
 
   useEffect(() => {
     // Check if user is already logged in
@@ -60,19 +62,26 @@ const Auth = () => {
     setLoading(true);
 
     try {
+      const metadata: any = {
+        full_name: fullName,
+        user_type: userType,
+      };
+
+      if (userType === "client") {
+        metadata.phone = phone;
+      }
+
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: {
-            full_name: fullName,
-          },
+          data: metadata,
           emailRedirectTo: `${window.location.origin}/`,
         },
       });
 
       if (error) throw error;
-      toast.success("Conta criada com sucesso!");
+      toast.success(userType === "client" ? "Conta de cliente criada com sucesso!" : "Conta de funcionário criada com sucesso!");
     } catch (error: any) {
       toast.error(error.message || "Erro ao criar conta");
     } finally {
@@ -130,6 +139,28 @@ const Auth = () => {
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
+                  <Label>Tipo de Conta</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      type="button"
+                      variant={userType === "client" ? "default" : "outline"}
+                      onClick={() => setUserType("client")}
+                      className="w-full"
+                    >
+                      Cliente
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={userType === "staff" ? "default" : "outline"}
+                      onClick={() => setUserType("staff")}
+                      className="w-full"
+                    >
+                      Funcionário
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="signup-name">Nome Completo</Label>
                   <Input
                     id="signup-name"
@@ -140,6 +171,21 @@ const Auth = () => {
                     required
                   />
                 </div>
+
+                {userType === "client" && (
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-phone">Telefone</Label>
+                    <Input
+                      id="signup-phone"
+                      type="tel"
+                      placeholder="(00) 00000-0000"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      required
+                    />
+                  </div>
+                )}
+
                 <div className="space-y-2">
                   <Label htmlFor="signup-email">Email</Label>
                   <Input
@@ -151,6 +197,7 @@ const Auth = () => {
                     required
                   />
                 </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="signup-password">Senha</Label>
                   <Input
@@ -163,8 +210,9 @@ const Auth = () => {
                     minLength={6}
                   />
                 </div>
+
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Criando conta..." : "Criar Conta"}
+                  {loading ? "Criando conta..." : `Criar Conta ${userType === "client" ? "de Cliente" : "de Funcionário"}`}
                 </Button>
               </form>
             </TabsContent>

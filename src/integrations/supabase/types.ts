@@ -61,6 +61,7 @@ export type Database = {
           id: string
           phone: string
           updated_at: string | null
+          user_id: string | null
         }
         Insert: {
           created_at?: string | null
@@ -70,6 +71,7 @@ export type Database = {
           id?: string
           phone: string
           updated_at?: string | null
+          user_id?: string | null
         }
         Update: {
           created_at?: string | null
@@ -79,6 +81,7 @@ export type Database = {
           id?: string
           phone?: string
           updated_at?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -272,7 +275,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "staff"
+      app_role: "admin" | "staff" | "client"
       appointment_status: "Agendado" | "Presente" | "Finalizado" | "Cancelado"
       payment_status: "Pendente" | "Pago"
       service_type: "Creche" | "Hotel" | "Banho"
@@ -403,7 +406,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "staff"],
+      app_role: ["admin", "staff", "client"],
       appointment_status: ["Agendado", "Presente", "Finalizado", "Cancelado"],
       payment_status: ["Pendente", "Pago"],
       service_type: ["Creche", "Hotel", "Banho"],
