@@ -262,6 +262,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       is_admin_or_staff: {
         Args: Record<PropertyKey, never>
         Returns: boolean
