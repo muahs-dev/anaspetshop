@@ -1,4 +1,4 @@
-import { Home, Users, Calendar, DollarSign, LogOut, Dog, UserCog } from "lucide-react";
+import { Home, Users, Calendar, DollarSign, LogOut, Dog, UserCog, Instagram, MessageCircle } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -87,6 +87,26 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter>
+        <SidebarGroup>
+          <SidebarGroupLabel>Contato</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={() => window.open("https://wa.me/5571992409363", "_blank")}>
+                  <MessageCircle className="h-4 w-4" />
+                  {!isCollapsed && <span>WhatsApp</span>}
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={() => window.open("https://www.instagram.com/marieanapetshop/", "_blank")}>
+                  <Instagram className="h-4 w-4" />
+                  {!isCollapsed && <span>Instagram</span>}
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={handleLogout}>

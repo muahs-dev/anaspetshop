@@ -18,6 +18,7 @@ import Financial from "./pages/Financial";
 import Auth from "./pages/Auth";
 import AccessPending from "./pages/AccessPending";
 import UserManagement from "./pages/UserManagement";
+import ClientDashboard from "./pages/ClientDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,27 +34,48 @@ const AuthenticatedApp = () => {
     );
   }
 
-  return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <AppSidebar />
-        <div className="flex-1 flex flex-col">
-          <header className="h-14 flex items-center border-b px-4 bg-background">
-            <SidebarTrigger />
-          </header>
-          <main className="flex-1 p-6 overflow-auto">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/clients" element={<Clients />} />
-              <Route path="/appointments" element={<Appointments />} />
-              <Route path="/financial" element={<Financial />} />
-              {role === "admin" && <Route path="/users" element={<UserManagement />} />}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
+  // Clientes veem interface diferente
+  if (role === "client") {
+    return (
+      <Routes>
+        <Route path="/" element={<ClientDashboard />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    );
+  }
+
+  // Admin e Staff veem o dashboard administrativo
+  if (role === "admin" || role === "staff") {
+    return (
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full">
+          <AppSidebar />
+          <div className="flex-1 flex flex-col">
+            <header className="h-14 flex items-center border-b px-4 bg-background">
+              <SidebarTrigger />
+            </header>
+            <main className="flex-1 p-6 overflow-auto">
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/clients" element={<Clients />} />
+                <Route path="/appointments" element={<Appointments />} />
+                <Route path="/financial" element={<Financial />} />
+                {role === "admin" && <Route path="/users" element={<UserManagement />} />}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
+          </div>
         </div>
-      </div>
-    </SidebarProvider>
+      </SidebarProvider>
+    );
+  }
+
+  // Usuário sem role definido
+  return (
+    <Routes>
+      <Route path="/" element={<AccessPending />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 };
 
