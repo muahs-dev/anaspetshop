@@ -97,6 +97,16 @@ export const NewClientDialog = ({ onClientAdded }: NewClientDialogProps) => {
           </div>
 
           <div className="space-y-2">
+            <Label htmlFor="pet_name">Nome do Pet</Label>
+            <Input
+              id="pet_name"
+              value={formData.pet_name}
+              onChange={(e) => setFormData({ ...formData, pet_name: e.target.value })}
+              placeholder="Opcional"
+            />
+          </div>
+
+          <div className="space-y-2">
             <Label htmlFor="phone">Telefone *</Label>
             <Input
               id="phone"
@@ -108,32 +118,12 @@ export const NewClientDialog = ({ onClientAdded }: NewClientDialogProps) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            />
-          </div>
-
-          <div className="space-y-2">
             <Label htmlFor="emergency_contact">Contato de Emergência</Label>
             <Input
               id="emergency_contact"
               type="tel"
               value={formData.emergency_contact}
               onChange={(e) => setFormData({ ...formData, emergency_contact: e.target.value })}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="pet_name">Nome do Pet</Label>
-            <Input
-              id="pet_name"
-              value={formData.pet_name}
-              onChange={(e) => setFormData({ ...formData, pet_name: e.target.value })}
-              placeholder="Opcional"
             />
           </div>
 

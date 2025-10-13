@@ -23,25 +23,28 @@ const UserManagement = () => {
     try {
       setLoading(true);
       
-      // Fetch all profiles
+      // Fetch all profiles with their roles in a single query
       const { data: profiles, error: profilesError } = await supabase
         .from("profiles")
-        .select("id, email, full_name");
+        .select(`
+          id, 
+          email, 
+          full_name,
+          user_roles (
+            id,
+            role
+          )
+        `);
 
       if (profilesError) throw profilesError;
 
-      // Fetch all user roles
-      const { data: roles, error: rolesError } = await supabase
-        .from("user_roles")
-        .select("id, user_id, role");
-
-      if (rolesError) throw rolesError;
-
-      // Combine the data
-      const usersWithRoles = profiles?.map((profile) => {
-        const userRole = roles?.find((r) => r.user_id === profile.id);
+      // Transform the data
+      const usersWithRoles = profiles?.map((profile: any) => {
+        const userRole = profile.user_roles?.[0];
         return {
-          ...profile,
+          id: profile.id,
+          email: profile.email,
+          full_name: profile.full_name,
           role: userRole?.role as "admin" | "staff" | undefined,
           role_id: userRole?.id,
         };

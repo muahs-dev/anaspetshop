@@ -42,56 +42,56 @@ const ClientDashboard = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2">Bem-vindo(a)!</h2>
-          <p className="text-muted-foreground">Agende os serviços para seu pet</p>
+      <main className="container mx-auto px-4 py-6 md:py-8 max-w-6xl">
+        <div className="mb-6 md:mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold mb-2">Bem-vindo(a)!</h2>
+          <p className="text-muted-foreground text-sm md:text-base">Agende os serviços para seu pet</p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
+        <div className="grid gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-6 md:mb-8">
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <CardHeader>
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
-                <Bath className="h-6 w-6 text-primary" />
+            <CardHeader className="pb-3">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
+                <Bath className="h-5 w-5 md:h-6 md:w-6 text-primary" />
               </div>
-              <CardTitle>Banho</CardTitle>
-              <CardDescription>Agende um banho para seu pet</CardDescription>
+              <CardTitle className="text-lg md:text-xl">Banho</CardTitle>
+              <CardDescription className="text-xs md:text-sm">Agende um banho para seu pet</CardDescription>
             </CardHeader>
-            <CardContent>
-              <Button className="w-full">
-                <Calendar className="mr-2 h-4 w-4" />
+            <CardContent className="pt-0">
+              <Button className="w-full text-sm md:text-base">
+                <Calendar className="mr-2 h-3 w-3 md:h-4 md:w-4" />
                 Agendar Banho
               </Button>
             </CardContent>
           </Card>
 
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <CardHeader>
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
-                <Scissors className="h-6 w-6 text-primary" />
+            <CardHeader className="pb-3">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
+                <Scissors className="h-5 w-5 md:h-6 md:w-6 text-primary" />
               </div>
-              <CardTitle>Tosa</CardTitle>
-              <CardDescription>Agende uma tosa para seu pet</CardDescription>
+              <CardTitle className="text-lg md:text-xl">Tosa</CardTitle>
+              <CardDescription className="text-xs md:text-sm">Agende uma tosa para seu pet</CardDescription>
             </CardHeader>
-            <CardContent>
-              <Button className="w-full">
-                <Calendar className="mr-2 h-4 w-4" />
+            <CardContent className="pt-0">
+              <Button className="w-full text-sm md:text-base">
+                <Calendar className="mr-2 h-3 w-3 md:h-4 md:w-4" />
                 Agendar Tosa
               </Button>
             </CardContent>
           </Card>
 
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <CardHeader>
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
-                <HomeIcon className="h-6 w-6 text-primary" />
+            <CardHeader className="pb-3">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary/10 flex items-center justify-center mb-2">
+                <HomeIcon className="h-5 w-5 md:h-6 md:w-6 text-primary" />
               </div>
-              <CardTitle>Creche</CardTitle>
-              <CardDescription>Reserve um dia na creche</CardDescription>
+              <CardTitle className="text-lg md:text-xl">Creche</CardTitle>
+              <CardDescription className="text-xs md:text-sm">Reserve um dia na creche</CardDescription>
             </CardHeader>
-            <CardContent>
-              <Button className="w-full">
-                <Calendar className="mr-2 h-4 w-4" />
+            <CardContent className="pt-0">
+              <Button className="w-full text-sm md:text-base">
+                <Calendar className="mr-2 h-3 w-3 md:h-4 md:w-4" />
                 Reservar Creche
               </Button>
             </CardContent>
@@ -99,17 +99,17 @@ const ClientDashboard = () => {
         </div>
 
         <Card>
-          <CardHeader>
-            <CardTitle>Entre em Contato</CardTitle>
-            <CardDescription>Fale conosco através das nossas redes sociais</CardDescription>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg md:text-xl">Entre em Contato</CardTitle>
+            <CardDescription className="text-xs md:text-sm">Fale conosco através das nossas redes sociais</CardDescription>
           </CardHeader>
-          <CardContent className="flex gap-4">
-            <Button onClick={handleWhatsApp} className="flex-1" variant="outline">
-              <MessageCircle className="mr-2 h-4 w-4" />
+          <CardContent className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <Button onClick={handleWhatsApp} className="flex-1 text-sm md:text-base" variant="outline">
+              <MessageCircle className="mr-2 h-3 w-3 md:h-4 md:w-4" />
               WhatsApp
             </Button>
-            <Button onClick={handleInstagram} className="flex-1" variant="outline">
-              <Instagram className="mr-2 h-4 w-4" />
+            <Button onClick={handleInstagram} className="flex-1 text-sm md:text-base" variant="outline">
+              <Instagram className="mr-2 h-3 w-3 md:h-4 md:w-4" />
               Instagram
             </Button>
           </CardContent>
