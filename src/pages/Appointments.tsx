@@ -67,20 +67,20 @@ const Appointments = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 md:space-y-6 p-4 md:p-0">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Agendamentos</h1>
-          <p className="text-muted-foreground">Gerencie os agendamentos da creche</p>
+          <h1 className="text-2xl md:text-3xl font-bold">Agendamentos</h1>
+          <p className="text-sm md:text-base text-muted-foreground">Gerencie os agendamentos da creche</p>
         </div>
         <NewAppointmentDialog onAppointmentAdded={fetchAppointments} />
       </div>
 
-      <div className="grid gap-6 md:grid-cols-[300px_1fr]">
+      <div className="grid gap-4 md:gap-6 md:grid-cols-[300px_1fr]">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CalendarIcon className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
+              <CalendarIcon className="h-4 w-4 md:h-5 md:w-5" />
               Calendário
             </CardTitle>
           </CardHeader>
@@ -89,7 +89,7 @@ const Appointments = () => {
               mode="single"
               selected={selectedDate}
               onSelect={setSelectedDate}
-              className="pointer-events-auto"
+              className="pointer-events-auto w-full"
               locale={ptBR}
             />
           </CardContent>
@@ -97,7 +97,7 @@ const Appointments = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>
+            <CardTitle className="text-base md:text-xl">
               Agendamentos para {selectedDate && format(selectedDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
             </CardTitle>
           </CardHeader>
@@ -109,35 +109,35 @@ const Appointments = () => {
                 Nenhum agendamento para esta data
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3 md:space-y-4">
                 {appointments.map((appointment) => (
                   <div
                     key={appointment.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
+                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 md:p-4 border rounded-lg"
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3 md:gap-4">
                       {appointment.pets?.photo_url ? (
                         <img
                           src={appointment.pets.photo_url}
                           alt={appointment.pets.name}
-                          className="h-12 w-12 rounded-full object-cover"
+                          className="h-10 w-10 md:h-12 md:w-12 rounded-full object-cover flex-shrink-0"
                         />
                       ) : (
-                        <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
-                          <span className="text-lg">🐕</span>
+                        <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+                          <span className="text-base md:text-lg">🐕</span>
                         </div>
                       )}
-                      <div>
-                        <p className="font-medium">{appointment.pets?.name}</p>
-                        <p className="text-sm text-muted-foreground">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium text-sm md:text-base truncate">{appointment.pets?.name}</p>
+                        <p className="text-xs md:text-sm text-muted-foreground truncate">
                           {appointment.pets?.clients?.full_name}
                         </p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-xs md:text-sm text-muted-foreground">
                           {appointment.service_type}
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 sm:flex-shrink-0">
                       <Badge className={getStatusColor(appointment.status)}>
                         {appointment.status}
                       </Badge>

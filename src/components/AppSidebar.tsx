@@ -32,9 +32,10 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAdmin } = useUserRole();
+  const { isAdmin, isStaff } = useUserRole();
   const currentPath = location.pathname;
 
+  // Only admins see the admin menu items
   const menuItems = isAdmin 
     ? [...baseMenuItems, ...adminMenuItems]
     : baseMenuItems;
