@@ -36,7 +36,11 @@ const Financial = () => {
       toast.error("Erro ao carregar dados financeiros");
       console.error(error);
     } else {
-      setClients(data || []);
+      // Filtrar apenas clientes que têm transações
+      const clientsWithTransactions = (data || []).filter(
+        (client) => client.transactions && client.transactions.length > 0
+      );
+      setClients(clientsWithTransactions);
     }
     setLoading(false);
   };

@@ -13,6 +13,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { registerServiceWorker } from "@/utils/registerSW";
 import Dashboard from "./pages/Dashboard";
 import Clients from "./pages/Clients";
+import ClientDetails from "./pages/ClientDetails";
 import Appointments from "./pages/Appointments";
 import Financial from "./pages/Financial";
 import Auth from "./pages/Auth";
@@ -58,6 +59,7 @@ const AuthenticatedApp = () => {
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/clients" element={<Clients />} />
+                <Route path="/clients/:id" element={<ClientDetails />} />
                 <Route path="/appointments" element={<Appointments />} />
                 <Route path="/financial" element={<Financial />} />
                 {role === "admin" && <Route path="/users" element={<UserManagement />} />}
