@@ -25,21 +25,12 @@ const baseMenuItems = [
   { title: "Financeiro", url: "/financial", icon: DollarSign },
 ];
 
-const adminMenuItems = [
-  { title: "Gerenciar Usuários", url: "/users", icon: UserCog },
-];
-
 export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
   const navigate = useNavigate();
   const { isAdmin, isStaff } = useUserRole();
   const currentPath = location.pathname;
-
-  // Only admins see the admin menu items
-  const menuItems = isAdmin 
-    ? [...baseMenuItems, ...adminMenuItems]
-    : baseMenuItems;
 
   const isActive = (path: string) => currentPath === path;
   const isCollapsed = state === "collapsed";
@@ -64,7 +55,7 @@ export function AppSidebar() {
               <h1 className="font-bold text-lg bg-gradient-primary bg-clip-text text-transparent">
                 ANASPETSHOP
               </h1>
-              <p className="text-xs text-muted-foreground">Gestão de Creche</p>
+              <p className="text-xs text-muted-foreground">Petshop & Creche</p>
             </div>
           )}
         </div>
