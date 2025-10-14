@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useUserRole } from "@/hooks/useUserRole";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   Sidebar,
   SidebarContent,
@@ -34,6 +33,10 @@ export function AppSidebar() {
 
   const isActive = (path: string) => currentPath === path;
   const isCollapsed = state === "collapsed";
+
+  const menuItems = isAdmin 
+    ? [...baseMenuItems, { title: "Gerenciar Usuários", url: "/users", icon: UserCog }]
+    : baseMenuItems;
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -101,12 +104,6 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarMenu>
-          <SidebarMenuItem>
-            <div className="flex items-center gap-2 px-2 py-1.5">
-              <ThemeToggle />
-              {!isCollapsed && <span className="text-sm">Modo Noturno</span>}
-            </div>
-          </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={handleLogout}>
               <LogOut className="h-4 w-4" />

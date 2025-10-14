@@ -110,6 +110,18 @@ const ClientDetails = () => {
     }
   };
 
+  const handleDeleteClient = async () => {
+    const { error } = await supabase.from("clients").delete().eq("id", id);
+
+    if (error) {
+      toast.error("Erro ao excluir cliente");
+      console.error(error);
+    } else {
+      toast.success("Cliente excluído com sucesso");
+      navigate("/clients");
+    }
+  };
+
   if (loading) {
     return <div className="text-center py-8">Carregando...</div>;
   }
@@ -166,9 +178,33 @@ const ClientDetails = () => {
             />
           </div>
 
-          <Button onClick={handleSave} disabled={saving}>
-            {saving ? "Salvando..." : "Salvar Alterações"}
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={handleSave} disabled={saving}>
+              {saving ? "Salvando..." : "Salvar Alterações"}
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive">
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Excluir Cliente
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Excluir Cliente</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Tem certeza que deseja excluir este cliente? Esta ação não pode ser desfeita e todos os pets e agendamentos associados também serão excluídos.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDeleteClient}>
+                    Excluir
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </CardContent>
       </Card>
 

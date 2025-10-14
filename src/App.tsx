@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { useUserRole } from "@/hooks/useUserRole";
 import { registerServiceWorker } from "@/utils/registerSW";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import Dashboard from "./pages/Dashboard";
 import Clients from "./pages/Clients";
 import ClientDetails from "./pages/ClientDetails";
@@ -52,8 +53,9 @@ const AuthenticatedApp = () => {
         <div className="min-h-screen flex w-full">
           <AppSidebar />
           <div className="flex-1 flex flex-col">
-            <header className="h-14 flex items-center border-b px-4 bg-background">
+            <header className="h-14 flex items-center justify-between border-b px-4 bg-background">
               <SidebarTrigger />
+              <ThemeToggle />
             </header>
             <main className="flex-1 p-6 overflow-auto">
               <Routes>
