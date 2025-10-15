@@ -58,6 +58,13 @@ const Auth = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validar senha única
+    if (password !== "010700mg") {
+      toast.error("Senha incorreta. Use a senha fornecida pela administração.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -169,16 +176,18 @@ const Auth = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="signup-password">Senha</Label>
+                  <Label htmlFor="signup-password">Senha de Cadastro</Label>
                   <Input
                     id="signup-password"
                     type="password"
-                    placeholder="••••••••"
+                    placeholder="Digite a senha fornecida"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    minLength={6}
                   />
+                  <p className="text-xs text-muted-foreground">
+                    Use a senha fornecida pela administração
+                  </p>
                 </div>
 
                 <Button type="submit" className="w-full" disabled={loading}>
