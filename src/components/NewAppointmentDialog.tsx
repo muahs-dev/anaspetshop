@@ -23,7 +23,8 @@ export const NewAppointmentDialog = ({ onAppointmentAdded }: NewAppointmentDialo
   const [selectedClient, setSelectedClient] = useState<string>("");
   const [selectedPet, setSelectedPet] = useState<string>("");
   const [serviceType, setServiceType] = useState<string>("");
-  const [appointmentDate, setAppointmentDate] = useState<Date>();
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
 
   useEffect(() => {
     if (open) {
@@ -70,27 +71,43 @@ export const NewAppointmentDialog = ({ onAppointmentAdded }: NewAppointmentDialo
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!selectedPet || !serviceType || !appointmentDate) {
+    if (!selectedPet || !serviceType || !startDate) {
       toast.error("Preencha todos os campos obrigatórios");
       return;
     }
 
+    const finalEndDate = endDate || startDate;
+
     setLoading(true);
 
-    const { error } = await supabase.from("appointments").insert([
-      {
-        pet_id: selectedPet,
-        service_type: serviceType as "Banho" | "Creche" | "Hotel",
-        appointment_date: format(appointmentDate, "yyyy-MM-dd"),
-        status: "Agendado" as "Agendado",
-      },
-    ]);
+    // Criar array de datas entre startDate e endDate
+    const appointmentDates: Date[] = [];
+    const currentDate = new Date(startDate);
+    const lastDate = new Date(finalEndDate);
+
+    while (currentDate <= lastDate) {
+      appointmentDates.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    // Criar múltiplos agendamentos
+    const appointments = appointmentDates.map(date => ({
+      pet_id: selectedPet,
+      service_type: serviceType as "Banho" | "Creche" | "Hotel",
+      appointment_date: format(date, "yyyy-MM-dd"),
+      status: "Agendado" as "Agendado",
+    }));
+
+    const { error } = await supabase.from("appointments").insert(appointments);
 
     if (error) {
       toast.error("Erro ao criar agendamento");
       console.error(error);
     } else {
-      toast.success("Agendamento criado com sucesso!");
+      const message = appointmentDates.length > 1 
+        ? `${appointmentDates.length} agendamentos criados com sucesso!`
+        : "Agendamento criado com sucesso!";
+      toast.success(message);
       resetForm();
       setOpen(false);
       onAppointmentAdded?.();
@@ -103,7 +120,8 @@ export const NewAppointmentDialog = ({ onAppointmentAdded }: NewAppointmentDialo
     setSelectedClient("");
     setSelectedPet("");
     setServiceType("");
-    setAppointmentDate(undefined);
+    setStartDate(undefined);
+    setEndDate(undefined);
   };
 
   return (
@@ -167,7 +185,7 @@ export const NewAppointmentDialog = ({ onAppointmentAdded }: NewAppointmentDialo
           </div>
 
           <div className="space-y-2">
-            <Label>Data do Agendamento *</Label>
+            <Label>Data de Início *</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -175,20 +193,51 @@ export const NewAppointmentDialog = ({ onAppointmentAdded }: NewAppointmentDialo
                   className="w-full justify-start text-left font-normal"
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {appointmentDate ? (
-                    format(appointmentDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })
+                  {startDate ? (
+                    format(startDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })
                   ) : (
-                    <span>Selecione uma data</span>
+                    <span>Selecione a data inicial</span>
                   )}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
                 <Calendar
                   mode="single"
-                  selected={appointmentDate}
-                  onSelect={setAppointmentDate}
+                  selected={startDate}
+                  onSelect={setStartDate}
                   locale={ptBR}
                   initialFocus
+                  className="pointer-events-auto"
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Data de Término (Opcional para múltiplos dias)</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start text-left font-normal"
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {endDate ? (
+                    format(endDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })
+                  ) : (
+                    <span>Apenas um dia</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={endDate}
+                  onSelect={setEndDate}
+                  disabled={(date) => startDate ? date < startDate : false}
+                  locale={ptBR}
+                  initialFocus
+                  className="pointer-events-auto"
                 />
               </PopoverContent>
             </Popover>

@@ -20,13 +20,15 @@ export const NewClientDialog = ({ onClientAdded }: NewClientDialogProps) => {
     email: "",
     emergency_contact: "",
     pet_name: "",
+    pet_breed: "",
+    pet_birth_date: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.full_name || !formData.phone) {
-      toast.error("Nome e telefone são obrigatórios");
+    if (!formData.full_name || !formData.phone || !formData.pet_name) {
+      toast.error("Nome, telefone e nome do pet são obrigatórios");
       return;
     }
 
@@ -50,23 +52,27 @@ export const NewClientDialog = ({ onClientAdded }: NewClientDialogProps) => {
       return;
     }
 
-    // Se tem nome do pet, cadastrar o pet também
-    if (formData.pet_name && clientData) {
+    // Cadastrar o pet (agora obrigatório)
+    if (clientData) {
       const { error: petError } = await supabase
         .from("pets")
         .insert([{
           name: formData.pet_name,
+          breed: formData.pet_breed || null,
+          birth_date: formData.pet_birth_date || null,
           client_id: clientData.id,
         }]);
 
       if (petError) {
         toast.error("Cliente cadastrado, mas erro ao cadastrar pet");
         console.error(petError);
+        setLoading(false);
+        return;
       }
     }
 
-    toast.success("Cliente cadastrado com sucesso!");
-    setFormData({ full_name: "", phone: "", email: "", emergency_contact: "", pet_name: "" });
+    toast.success("Cliente e pet cadastrados com sucesso!");
+    setFormData({ full_name: "", phone: "", email: "", emergency_contact: "", pet_name: "", pet_breed: "", pet_birth_date: "" });
     setOpen(false);
     onClientAdded?.();
 
@@ -97,12 +103,32 @@ export const NewClientDialog = ({ onClientAdded }: NewClientDialogProps) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="pet_name">Nome do Pet</Label>
+            <Label htmlFor="pet_name">Nome do Pet *</Label>
             <Input
               id="pet_name"
               value={formData.pet_name}
               onChange={(e) => setFormData({ ...formData, pet_name: e.target.value })}
-              placeholder="Opcional"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="pet_breed">Raça do Pet</Label>
+            <Input
+              id="pet_breed"
+              value={formData.pet_breed}
+              onChange={(e) => setFormData({ ...formData, pet_breed: e.target.value })}
+              placeholder="Ex: Labrador, Vira-lata, etc."
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="pet_birth_date">Data de Nascimento do Pet</Label>
+            <Input
+              id="pet_birth_date"
+              type="date"
+              value={formData.pet_birth_date}
+              onChange={(e) => setFormData({ ...formData, pet_birth_date: e.target.value })}
             />
           </div>
 
