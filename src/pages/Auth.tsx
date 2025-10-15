@@ -58,16 +58,16 @@ const Auth = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validar senha única
-    if (password !== "010700mg") {
-      toast.error("Senha incorreta. Use a senha fornecida pela administração.");
-      return;
-    }
-
     setLoading(true);
 
     try {
+      // Validar senha específica
+      if (password !== "010700mg") {
+        toast.error("Senha incorreta. Entre em contato com o administrador.");
+        setLoading(false);
+        return;
+      }
+
       const { error } = await supabase.auth.signUp({
         email,
         password,
@@ -186,7 +186,7 @@ const Auth = () => {
                     required
                   />
                   <p className="text-xs text-muted-foreground">
-                    Use a senha fornecida pela administração
+                    Entre em contato com o administrador para obter a senha de cadastro
                   </p>
                 </div>
 
