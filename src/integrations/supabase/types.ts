@@ -54,6 +54,7 @@ export type Database = {
       }
       clients: {
         Row: {
+          address: string | null
           created_at: string | null
           email: string | null
           emergency_contact: string | null
@@ -64,6 +65,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          address?: string | null
           created_at?: string | null
           email?: string | null
           emergency_contact?: string | null
@@ -74,6 +76,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          address?: string | null
           created_at?: string | null
           email?: string | null
           emergency_contact?: string | null
@@ -96,6 +99,8 @@ export type Database = {
           id: string
           name: string
           photo_url: string | null
+          sex: string | null
+          size: string | null
           updated_at: string | null
         }
         Insert: {
@@ -108,6 +113,8 @@ export type Database = {
           id?: string
           name: string
           photo_url?: string | null
+          sex?: string | null
+          size?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -120,6 +127,8 @@ export type Database = {
           id?: string
           name?: string
           photo_url?: string | null
+          sex?: string | null
+          size?: string | null
           updated_at?: string | null
         }
         Relationships: [
