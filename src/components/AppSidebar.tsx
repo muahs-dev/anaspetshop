@@ -25,9 +25,7 @@ import {
 
 const baseMenuItems = [
   { title: "Dashboard", url: "/", icon: Home },
-  { title: "Clientes & Pets", url: "/clients", icon: Users },
   { title: "Agendamentos", url: "/appointments", icon: Calendar },
-  { title: "Financeiro", url: "/financial", icon: DollarSign },
 ];
 
 export function AppSidebar() {
@@ -37,6 +35,8 @@ export function AppSidebar() {
   const { isAdmin, isStaff } = useUserRole();
   const currentPath = location.pathname;
   const [crecheOpen, setCrecheOpen] = useState(false);
+  const [clientesOpen, setClientesOpen] = useState(false);
+  const [financeiroOpen, setFinanceiroOpen] = useState(false);
 
   const isActive = (path: string) => currentPath === path;
   const isCollapsed = state === "collapsed";
@@ -87,6 +87,72 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        <Collapsible open={clientesOpen} onOpenChange={setClientesOpen} className="group/collapsible">
+          <SidebarGroup>
+            <SidebarGroupLabel asChild>
+              <CollapsibleTrigger className="flex w-full items-center justify-between">
+                <span>Clientes</span>
+                <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+              </CollapsibleTrigger>
+            </SidebarGroupLabel>
+            <CollapsibleContent>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive("/clients")}>
+                      <NavLink to="/clients">
+                        <Users className="h-4 w-4" />
+                        {!isCollapsed && <span>Clientes & Pets</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive("/pets")}>
+                      <NavLink to="/pets">
+                        <Dog className="h-4 w-4" />
+                        {!isCollapsed && <span>Pets</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
+
+        <Collapsible open={financeiroOpen} onOpenChange={setFinanceiroOpen} className="group/collapsible">
+          <SidebarGroup>
+            <SidebarGroupLabel asChild>
+              <CollapsibleTrigger className="flex w-full items-center justify-between">
+                <span>Financeiro</span>
+                <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+              </CollapsibleTrigger>
+            </SidebarGroupLabel>
+            <CollapsibleContent>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive("/financial")}>
+                      <NavLink to="/financial">
+                        <DollarSign className="h-4 w-4" />
+                        {!isCollapsed && <span>Pagamentos Clientes</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive("/pet-expenses")}>
+                      <NavLink to="/pet-expenses">
+                        <DollarSign className="h-4 w-4" />
+                        {!isCollapsed && <span>Gastos da Pet</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
 
         <Collapsible open={crecheOpen} onOpenChange={setCrecheOpen} className="group/collapsible">
           <SidebarGroup>

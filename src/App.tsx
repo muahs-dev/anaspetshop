@@ -22,6 +22,8 @@ import AccessPending from "./pages/AccessPending";
 import UserManagement from "./pages/UserManagement";
 import ClientDashboard from "./pages/ClientDashboard";
 import Reminders from "./pages/Reminders";
+import Pets from "./pages/Pets";
+import PetExpenses from "./pages/PetExpenses";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -63,8 +65,10 @@ const AuthenticatedApp = () => {
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/clients" element={<Clients />} />
                 <Route path="/clients/:id" element={<ClientDetails />} />
+                <Route path="/pets" element={<Pets />} />
                 <Route path="/appointments" element={<Appointments />} />
                 <Route path="/financial" element={<Financial />} />
+                <Route path="/pet-expenses" element={<PetExpenses />} />
                 <Route path="/creche/lembretes" element={<Reminders />} />
                 {role === "admin" && <Route path="/users" element={<UserManagement />} />}
                 <Route path="*" element={<NotFound />} />
