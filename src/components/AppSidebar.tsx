@@ -1,9 +1,10 @@
-import { Home, Users, Calendar, DollarSign, LogOut, Dog, UserCog, Instagram, MessageCircle } from "lucide-react";
+import { Home, Users, Calendar, DollarSign, LogOut, Dog, UserCog, Instagram, MessageCircle, ChevronDown, Bell } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useState } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -16,6 +17,11 @@ import {
   SidebarFooter,
   useSidebar,
 } from "@/components/ui/sidebar";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 const baseMenuItems = [
   { title: "Dashboard", url: "/", icon: Home },
@@ -30,6 +36,7 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const { isAdmin, isStaff } = useUserRole();
   const currentPath = location.pathname;
+  const [crecheOpen, setCrecheOpen] = useState(false);
 
   const isActive = (path: string) => currentPath === path;
   const isCollapsed = state === "collapsed";
@@ -80,6 +87,31 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        <Collapsible open={crecheOpen} onOpenChange={setCrecheOpen} className="group/collapsible">
+          <SidebarGroup>
+            <SidebarGroupLabel asChild>
+              <CollapsibleTrigger className="flex w-full items-center justify-between">
+                <span>Creche</span>
+                <ChevronDown className="h-4 w-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
+              </CollapsibleTrigger>
+            </SidebarGroupLabel>
+            <CollapsibleContent>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive("/creche/lembretes")}>
+                      <NavLink to="/creche/lembretes">
+                        <Bell className="h-4 w-4" />
+                        {!isCollapsed && <span>Lembretes</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </SidebarGroup>
+        </Collapsible>
       </SidebarContent>
 
       <SidebarFooter>

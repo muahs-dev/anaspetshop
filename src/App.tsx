@@ -21,6 +21,7 @@ import Auth from "./pages/Auth";
 import AccessPending from "./pages/AccessPending";
 import UserManagement from "./pages/UserManagement";
 import ClientDashboard from "./pages/ClientDashboard";
+import Reminders from "./pages/Reminders";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -64,6 +65,7 @@ const AuthenticatedApp = () => {
                 <Route path="/clients/:id" element={<ClientDetails />} />
                 <Route path="/appointments" element={<Appointments />} />
                 <Route path="/financial" element={<Financial />} />
+                <Route path="/creche/lembretes" element={<Reminders />} />
                 {role === "admin" && <Route path="/users" element={<UserManagement />} />}
                 <Route path="*" element={<NotFound />} />
               </Routes>
