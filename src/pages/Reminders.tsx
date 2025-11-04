@@ -83,12 +83,15 @@ const Reminders = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="time">Horário</Label>
-                <Input
-                  id="time"
-                  type="time"
-                  value={newReminderTime}
-                  onChange={(e) => setNewReminderTime(e.target.value)}
-                />
+                <div className="relative">
+                  <Input
+                    id="time"
+                    type="time"
+                    value={newReminderTime}
+                    onChange={(e) => setNewReminderTime(e.target.value)}
+                    className="text-lg font-semibold"
+                  />
+                </div>
               </div>
               <Button onClick={handleAddReminder} className="w-full">
                 Criar Lembrete
@@ -135,7 +138,7 @@ const Reminders = () => {
                     variant={reminder.active ? "default" : "outline"}
                     onClick={() => toggleReminder(reminder.id)}
                   >
-                    {reminder.active ? "Ativo" : "Inativo"}
+                    {reminder.active ? "Concluído" : "Não Concluído"}
                   </Button>
                 </div>
               </CardContent>
