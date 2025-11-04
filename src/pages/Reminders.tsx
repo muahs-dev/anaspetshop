@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Plus, Trash2, Bell } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Plus, Trash2, Bell, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,26 +18,78 @@ const Reminders = () => {
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newReminderName, setNewReminderName] = useState("");
-  const [newReminderTime, setNewReminderTime] = useState("");
+  const [newReminderHour, setNewReminderHour] = useState("");
+  const [newReminderMinute, setNewReminderMinute] = useState("");
+  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>("default");
+
+  useEffect(() => {
+    // Load reminders from localStorage
+    const saved = localStorage.getItem("reminders");
+    if (saved) {
+      setReminders(JSON.parse(saved));
+    }
+
+    // Request notification permission
+    if ("Notification" in window) {
+      setNotificationPermission(Notification.permission);
+      if (Notification.permission === "default") {
+        Notification.requestPermission().then(permission => {
+          setNotificationPermission(permission);
+        });
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    // Save reminders to localStorage
+    localStorage.setItem("reminders", JSON.stringify(reminders));
+
+    // Check reminders every minute
+    const interval = setInterval(() => {
+      checkReminders();
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, [reminders]);
+
+  const checkReminders = () => {
+    const now = new Date();
+    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    
+    reminders.forEach(reminder => {
+      if (reminder.active && reminder.time === currentTime) {
+        if ("Notification" in window && Notification.permission === "granted") {
+          new Notification("Lembrete da Creche", {
+            body: reminder.name,
+            icon: "/icon-192x192.png",
+            tag: reminder.id
+          });
+        }
+      }
+    });
+  };
 
   const handleAddReminder = () => {
-    if (!newReminderName.trim() || !newReminderTime) {
+    if (!newReminderName.trim() || !newReminderHour || !newReminderMinute) {
       toast.error("Preencha todos os campos");
       return;
     }
 
+    const time = `${newReminderHour.padStart(2, '0')}:${newReminderMinute.padStart(2, '0')}`;
+
     const newReminder: Reminder = {
       id: Date.now().toString(),
       name: newReminderName,
-      time: newReminderTime,
+      time: time,
       active: true,
     };
 
     setReminders([...reminders, newReminder]);
     setNewReminderName("");
-    setNewReminderTime("");
+    setNewReminderHour("");
+    setNewReminderMinute("");
     setIsDialogOpen(false);
-    toast.success("Lembrete criado com sucesso");
+    toast.success("Lembrete criado com sucesso! Você receberá uma notificação no horário.");
   };
 
   const handleDeleteReminder = (id: string) => {
@@ -82,15 +134,35 @@ const Reminders = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="time">Horário</Label>
-                <div className="relative">
-                  <Input
-                    id="time"
-                    type="time"
-                    value={newReminderTime}
-                    onChange={(e) => setNewReminderTime(e.target.value)}
-                    className="text-lg font-semibold"
-                  />
+                <Label>Horário</Label>
+                <div className="flex items-center gap-3">
+                  <div className="flex-1">
+                    <Label htmlFor="hour" className="text-xs text-muted-foreground">Hora</Label>
+                    <Input
+                      id="hour"
+                      type="number"
+                      min="0"
+                      max="23"
+                      placeholder="00"
+                      value={newReminderHour}
+                      onChange={(e) => setNewReminderHour(e.target.value)}
+                      className="text-2xl font-bold text-center h-16"
+                    />
+                  </div>
+                  <Clock className="h-6 w-6 text-muted-foreground mt-5" />
+                  <div className="flex-1">
+                    <Label htmlFor="minute" className="text-xs text-muted-foreground">Minuto</Label>
+                    <Input
+                      id="minute"
+                      type="number"
+                      min="0"
+                      max="59"
+                      placeholder="00"
+                      value={newReminderMinute}
+                      onChange={(e) => setNewReminderMinute(e.target.value)}
+                      className="text-2xl font-bold text-center h-16"
+                    />
+                  </div>
                 </div>
               </div>
               <Button onClick={handleAddReminder} className="w-full">
@@ -134,12 +206,17 @@ const Reminders = () => {
                     <Bell className={reminder.active ? "h-5 w-5 text-primary" : "h-5 w-5 text-muted-foreground"} />
                     <span className="text-2xl font-bold">{reminder.time}</span>
                   </div>
-                  <Button
-                    variant={reminder.active ? "default" : "outline"}
-                    onClick={() => toggleReminder(reminder.id)}
-                  >
-                    {reminder.active ? "Concluído" : "Não Concluído"}
-                  </Button>
+                  {reminder.active && (
+                    <Button
+                      variant="outline"
+                      onClick={() => toggleReminder(reminder.id)}
+                    >
+                      Não Concluído
+                    </Button>
+                  )}
+                  {!reminder.active && (
+                    <span className="text-sm text-muted-foreground font-medium">Concluído</span>
+                  )}
                 </div>
               </CardContent>
             </Card>
