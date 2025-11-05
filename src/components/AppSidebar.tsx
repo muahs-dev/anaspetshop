@@ -34,9 +34,6 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const { isAdmin, isStaff } = useUserRole();
   const currentPath = location.pathname;
-  const [crecheOpen, setCrecheOpen] = useState(false);
-  const [clientesOpen, setClientesOpen] = useState(false);
-  const [financeiroOpen, setFinanceiroOpen] = useState(false);
 
   const isActive = (path: string) => currentPath === path;
   const isCollapsed = state === "collapsed";
@@ -88,7 +85,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <Collapsible open={clientesOpen} onOpenChange={setClientesOpen} className="group/collapsible">
+        <Collapsible defaultOpen={true} className="group/collapsible">
           <SidebarGroup>
             <SidebarGroupLabel asChild>
               <CollapsibleTrigger className="flex w-full items-center justify-between">
@@ -121,7 +118,7 @@ export function AppSidebar() {
           </SidebarGroup>
         </Collapsible>
 
-        <Collapsible open={financeiroOpen} onOpenChange={setFinanceiroOpen} className="group/collapsible">
+        <Collapsible defaultOpen={true} className="group/collapsible">
           <SidebarGroup>
             <SidebarGroupLabel asChild>
               <CollapsibleTrigger className="flex w-full items-center justify-between">
@@ -154,7 +151,7 @@ export function AppSidebar() {
           </SidebarGroup>
         </Collapsible>
 
-        <Collapsible open={crecheOpen} onOpenChange={setCrecheOpen} className="group/collapsible">
+        <Collapsible defaultOpen={true} className="group/collapsible">
           <SidebarGroup>
             <SidebarGroupLabel asChild>
               <CollapsibleTrigger className="flex w-full items-center justify-between">

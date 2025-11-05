@@ -1,83 +1,89 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Plus } from "lucide-react";
-
-interface Pet {
-  id: string;
-  name: string;
-}
+import { Plus, Upload } from "lucide-react";
 
 export default function NewPetExpenseDialog({ onSuccess }: { onSuccess: () => void }) {
   const [open, setOpen] = useState(false);
-  const [pets, setPets] = useState<Pet[]>([]);
   const [formData, setFormData] = useState({
-    pet_id: "",
     amount: "",
     description: "",
     expense_date: new Date().toISOString().split("T")[0],
     category: "",
   });
-
-  useEffect(() => {
-    if (open) {
-      fetchPets();
-    }
-  }, [open]);
-
-  const fetchPets = async () => {
-    const { data, error } = await supabase
-      .from("pets")
-      .select("id, name")
-      .order("name");
-
-    if (error) {
-      console.error("Error fetching pets:", error);
-    } else {
-      setPets(data || []);
-    }
-  };
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setUploading(true);
 
-    const { error } = await supabase.from("pet_expenses").insert({
-      pet_id: formData.pet_id,
-      amount: parseFloat(formData.amount),
-      description: formData.description,
-      expense_date: formData.expense_date,
-      category: formData.category || null,
-    });
+    try {
+      let imageUrl = null;
 
-    if (error) {
-      toast.error("Erro ao registrar gasto");
-      console.error(error);
-    } else {
-      toast.success("Gasto registrado com sucesso!");
-      setFormData({
-        pet_id: "",
-        amount: "",
-        description: "",
-        expense_date: new Date().toISOString().split("T")[0],
-        category: "",
+      // Upload image if selected
+      if (imageFile) {
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('expense-receipts')
+          .upload(filePath, imageFile);
+
+        if (uploadError) {
+          toast.error("Erro ao fazer upload da imagem");
+          console.error(uploadError);
+          setUploading(false);
+          return;
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('expense-receipts')
+          .getPublicUrl(filePath);
+
+        imageUrl = publicUrl;
+      }
+
+      const { error } = await supabase.from("pet_expenses").insert({
+        amount: parseFloat(formData.amount),
+        description: formData.description,
+        expense_date: formData.expense_date,
+        category: formData.category || null,
+        image_url: imageUrl,
       });
-      onSuccess();
-      setOpen(false);
+
+      if (error) {
+        toast.error("Erro ao registrar gasto");
+        console.error(error);
+      } else {
+        toast.success("Gasto registrado com sucesso!");
+        setFormData({
+          amount: "",
+          description: "",
+          expense_date: new Date().toISOString().split("T")[0],
+          category: "",
+        });
+        setImageFile(null);
+        onSuccess();
+        setOpen(false);
+      }
+    } finally {
+      setUploading(false);
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Novo Gasto
+        <Button className="flex items-center justify-center gap-2">
+          <Plus className="h-4 w-4" />
+          <span>Novo Gasto</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-md">
@@ -85,22 +91,6 @@ export default function NewPetExpenseDialog({ onSuccess }: { onSuccess: () => vo
           <DialogTitle>Novo Gasto da Pet</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="pet_id">Pet *</Label>
-            <Select value={formData.pet_id} onValueChange={(value) => setFormData({ ...formData, pet_id: value })} required>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione o pet" />
-              </SelectTrigger>
-              <SelectContent>
-                {pets.map((pet) => (
-                  <SelectItem key={pet.id} value={pet.id}>
-                    {pet.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
           <div className="space-y-2">
             <Label htmlFor="amount">Valor (R$) *</Label>
             <Input
@@ -145,11 +135,29 @@ export default function NewPetExpenseDialog({ onSuccess }: { onSuccess: () => vo
             />
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="image">Imagem (Opcional)</Label>
+            <div className="flex items-center gap-2">
+              <Input
+                id="image"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                className="flex-1"
+              />
+              {imageFile && (
+                <Upload className="h-4 w-4 text-green-600" />
+              )}
+            </div>
+          </div>
+
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancelar
             </Button>
-            <Button type="submit">Registrar Gasto</Button>
+            <Button type="submit" disabled={uploading}>
+              {uploading ? "Enviando..." : "Registrar Gasto"}
+            </Button>
           </div>
         </form>
       </DialogContent>
