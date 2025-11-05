@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,14 +29,28 @@ interface EditPetDialogProps {
 
 export default function EditPetDialog({ pet, open, onOpenChange, onSuccess }: EditPetDialogProps) {
   const [formData, setFormData] = useState({
-    name: pet?.name || "",
-    breed: pet?.breed || "",
-    birth_date: pet?.birth_date || "",
-    sex: pet?.sex || "",
-    size: pet?.size || "",
-    health_notes: pet?.health_notes || "",
-    behavior_notes: pet?.behavior_notes || "",
+    name: "",
+    breed: "",
+    birth_date: "",
+    sex: "",
+    size: "",
+    health_notes: "",
+    behavior_notes: "",
   });
+
+  useEffect(() => {
+    if (pet) {
+      setFormData({
+        name: pet.name || "",
+        breed: pet.breed || "",
+        birth_date: pet.birth_date || "",
+        sex: pet.sex || "",
+        size: pet.size || "",
+        health_notes: pet.health_notes || "",
+        behavior_notes: pet.behavior_notes || "",
+      });
+    }
+  }, [pet]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
