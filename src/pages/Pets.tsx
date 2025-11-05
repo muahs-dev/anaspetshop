@@ -2,7 +2,9 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Search, Dog } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Search, Dog, Pencil } from "lucide-react";
+import EditPetDialog from "@/components/EditPetDialog";
 
 interface Pet {
   id: string;
@@ -22,6 +24,8 @@ export default function Pets() {
   const [pets, setPets] = useState<Pet[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [editingPet, setEditingPet] = useState<Pet | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchPets();
@@ -74,12 +78,22 @@ export default function Pets() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredPets.map((pet) => (
-            <Card key={pet.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-              <CardHeader>
+            <Card key={pet.id} className="hover:shadow-lg transition-shadow">
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <Dog className="h-5 w-5" />
                   {pet.name}
                 </CardTitle>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => {
+                    setEditingPet(pet);
+                    setEditDialogOpen(true);
+                  }}
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
               </CardHeader>
               <CardContent className="space-y-2">
                 <p className="text-sm text-muted-foreground">
@@ -105,6 +119,13 @@ export default function Pets() {
           Nenhum pet encontrado
         </div>
       )}
+
+      <EditPetDialog
+        pet={editingPet}
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        onSuccess={fetchPets}
+      />
     </div>
   );
 }
