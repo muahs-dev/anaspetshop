@@ -39,7 +39,11 @@ export function AppSidebar() {
   const isCollapsed = state === "collapsed";
 
   const menuItems = isAdmin 
-    ? [...baseMenuItems, { title: "Gerenciar Usuários", url: "/users", icon: UserCog }]
+    ? [
+        ...baseMenuItems, 
+        { title: "Aprovação de Usuários", url: "/pending-approvals", icon: UserCog },
+        { title: "Gerenciar Usuários", url: "/users", icon: Users }
+      ]
     : baseMenuItems;
 
   const handleLogout = async () => {

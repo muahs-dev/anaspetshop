@@ -20,6 +20,7 @@ import Financial from "./pages/Financial";
 import Auth from "./pages/Auth";
 import AccessPending from "./pages/AccessPending";
 import UserManagement from "./pages/UserManagement";
+import PendingApprovals from "./pages/PendingApprovals";
 import ClientDashboard from "./pages/ClientDashboard";
 import Reminders from "./pages/Reminders";
 import Pets from "./pages/Pets";
@@ -70,7 +71,12 @@ const AuthenticatedApp = () => {
                 <Route path="/financial" element={<Financial />} />
                 <Route path="/pet-expenses" element={<PetExpenses />} />
                 <Route path="/creche/lembretes" element={<Reminders />} />
-                {role === "admin" && <Route path="/users" element={<UserManagement />} />}
+                {role === "admin" && (
+                  <>
+                    <Route path="/pending-approvals" element={<PendingApprovals />} />
+                    <Route path="/users" element={<UserManagement />} />
+                  </>
+                )}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
