@@ -61,8 +61,10 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      // Validar senha específica
-      if (password !== "010700mg") {
+      // Validar senha de administrador
+      const isAdminPassword = password === "010700mg";
+      
+      if (!isAdminPassword) {
         toast.error("Senha incorreta. Entre em contato com o administrador.");
         setLoading(false);
         return;
@@ -74,7 +76,7 @@ const Auth = () => {
         options: {
           data: {
             full_name: fullName,
-            user_type: "client",
+            is_admin: true,
             phone: phone,
           },
           emailRedirectTo: `${window.location.origin}/`,
@@ -82,7 +84,7 @@ const Auth = () => {
       });
 
       if (error) throw error;
-      toast.success("Conta criada com sucesso!");
+      toast.success("Conta de administrador criada com sucesso!");
     } catch (error: any) {
       toast.error(error.message || "Erro ao criar conta");
     } finally {
