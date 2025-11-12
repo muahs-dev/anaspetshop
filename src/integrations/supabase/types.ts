@@ -52,6 +52,42 @@ export type Database = {
           },
         ]
       }
+      approval_history: {
+        Row: {
+          action: string
+          approved_by: string
+          approved_by_email: string
+          assigned_role: Database["public"]["Enums"]["app_role"] | null
+          created_at: string
+          id: string
+          user_email: string
+          user_id: string
+          user_name: string
+        }
+        Insert: {
+          action: string
+          approved_by: string
+          approved_by_email: string
+          assigned_role?: Database["public"]["Enums"]["app_role"] | null
+          created_at?: string
+          id?: string
+          user_email: string
+          user_id: string
+          user_name: string
+        }
+        Update: {
+          action?: string
+          approved_by?: string
+          approved_by_email?: string
+          assigned_role?: Database["public"]["Enums"]["app_role"] | null
+          created_at?: string
+          id?: string
+          user_email?: string
+          user_id?: string
+          user_name?: string
+        }
+        Relationships: []
+      }
       clients: {
         Row: {
           address: string | null

@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useUserRole } from "@/hooks/useUserRole";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
 import {
   Sidebar,
   SidebarContent,
@@ -34,9 +35,70 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const { isAdmin, isStaff } = useUserRole();
   const currentPath = location.pathname;
+  const [pendingCount, setPendingCount] = useState(0);
 
   const isActive = (path: string) => currentPath === path;
   const isCollapsed = state === "collapsed";
+
+  useEffect(() => {
+    if (!isAdmin) return;
+
+    const fetchPendingCount = async () => {
+      try {
+        const { data: profiles, error: profilesError } = await supabase
+          .from("profiles")
+          .select("id");
+
+        if (profilesError) throw profilesError;
+
+        const { data: roles, error: rolesError } = await supabase
+          .from("user_roles")
+          .select("user_id");
+
+        if (rolesError) throw rolesError;
+
+        const rolesSet = new Set(roles?.map(r => r.user_id) || []);
+        const pending = profiles?.filter(p => !rolesSet.has(p.id)) || [];
+        
+        setPendingCount(pending.length);
+      } catch (error) {
+        console.error("Erro ao buscar usuários pendentes:", error);
+      }
+    };
+
+    fetchPendingCount();
+
+    // Subscribe to realtime updates
+    const channel = supabase
+      .channel("profiles-sidebar")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "profiles",
+        },
+        () => {
+          fetchPendingCount();
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "user_roles",
+        },
+        () => {
+          fetchPendingCount();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isAdmin]);
 
   const menuItems = isAdmin 
     ? [
@@ -78,9 +140,16 @@ export function AppSidebar() {
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                    <NavLink to={item.url}>
-                      <item.icon className="h-4 w-4" />
-                      {!isCollapsed && <span>{item.title}</span>}
+                    <NavLink to={item.url} className="flex items-center justify-between w-full">
+                      <div className="flex items-center gap-2">
+                        <item.icon className="h-4 w-4" />
+                        {!isCollapsed && <span>{item.title}</span>}
+                      </div>
+                      {!isCollapsed && item.url === "/pending-approvals" && pendingCount > 0 && (
+                        <Badge variant="destructive" className="ml-auto">
+                          {pendingCount}
+                        </Badge>
+                      )}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
