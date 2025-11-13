@@ -14,6 +14,7 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [newUserPassword, setNewUserPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
 
@@ -63,20 +64,15 @@ const Auth = () => {
     try {
       // Validar senha de administrador
       const isAdminPassword = password === "010700mg";
-      
-      if (!isAdminPassword) {
-        toast.error("Senha incorreta. Entre em contato com o administrador.");
-        setLoading(false);
-        return;
-      }
 
       const { error } = await supabase.auth.signUp({
         email,
-        password,
+        password: newUserPassword,
         options: {
           data: {
             full_name: fullName,
-            is_admin: true,
+            is_admin: isAdminPassword,
+            user_type: isAdminPassword ? undefined : 'staff',
             phone: phone,
           },
           emailRedirectTo: `${window.location.origin}/`,
@@ -84,7 +80,7 @@ const Auth = () => {
       });
 
       if (error) throw error;
-      toast.success("Conta de administrador criada com sucesso!");
+      toast.success(isAdminPassword ? "Conta de administrador criada com sucesso!" : "Conta criada com sucesso!");
     } catch (error: any) {
       toast.error(error.message || "Erro ao criar conta");
     } finally {
@@ -178,17 +174,28 @@ const Auth = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="signup-password">Senha de Cadastro</Label>
+                  <Label htmlFor="new-user-password">Crie sua Senha</Label>
+                  <Input
+                    id="new-user-password"
+                    type="password"
+                    placeholder="Digite sua senha"
+                    value={newUserPassword}
+                    onChange={(e) => setNewUserPassword(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="signup-password">Senha de Cadastro (Opcional)</Label>
                   <Input
                     id="signup-password"
                     type="password"
-                    placeholder="Digite a senha fornecida"
+                    placeholder="Digite a senha fornecida para admin"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    required
                   />
                   <p className="text-xs text-muted-foreground">
-                    Entre em contato com o administrador para obter a senha de cadastro
+                    Deixe em branco para criar conta como staff. Use a senha mestra para criar conta admin.
                   </p>
                 </div>
 
