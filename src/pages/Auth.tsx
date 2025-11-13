@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dog } from "lucide-react";
+import { Dog, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
 const Auth = () => {
@@ -17,6 +17,9 @@ const Auth = () => {
   const [newUserPassword, setNewUserPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+  const [showSignInPassword, setShowSignInPassword] = useState(false);
+  const [showNewUserPassword, setShowNewUserPassword] = useState(false);
+  const [showAdminPassword, setShowAdminPassword] = useState(false);
 
   useEffect(() => {
     // Check if user is already logged in
@@ -51,6 +54,7 @@ const Auth = () => {
       if (error) throw error;
       toast.success("Login realizado com sucesso!");
     } catch (error: any) {
+      console.error("Erro ao fazer login:", error);
       toast.error(error.message || "Erro ao fazer login");
     } finally {
       setLoading(false);
@@ -82,7 +86,14 @@ const Auth = () => {
       if (error) throw error;
       toast.success(isAdminPassword ? "Conta de administrador criada com sucesso!" : "Conta criada com sucesso!");
     } catch (error: any) {
-      toast.error(error.message || "Erro ao criar conta");
+      console.error("Erro ao criar conta:", error);
+      
+      // Melhor tratamento de erro para "Failed to fetch"
+      if (error.message === "Failed to fetch") {
+        toast.error("Erro de conexão. Verifique sua internet e tente novamente.");
+      } else {
+        toast.error(error.message || "Erro ao criar conta");
+      }
     } finally {
       setLoading(false);
     }
@@ -120,14 +131,24 @@ const Auth = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="signin-password">Senha</Label>
-                  <Input
-                    id="signin-password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
+                  <div className="relative">
+                    <Input
+                      id="signin-password"
+                      type={showSignInPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowSignInPassword(!showSignInPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {showSignInPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "Entrando..." : "Entrar"}
@@ -175,25 +196,45 @@ const Auth = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="new-user-password">Crie sua Senha</Label>
-                  <Input
-                    id="new-user-password"
-                    type="password"
-                    placeholder="Digite sua senha"
-                    value={newUserPassword}
-                    onChange={(e) => setNewUserPassword(e.target.value)}
-                    required
-                  />
+                  <div className="relative">
+                    <Input
+                      id="new-user-password"
+                      type={showNewUserPassword ? "text" : "password"}
+                      placeholder="Digite sua senha"
+                      value={newUserPassword}
+                      onChange={(e) => setNewUserPassword(e.target.value)}
+                      required
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewUserPassword(!showNewUserPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {showNewUserPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="signup-password">Senha de Cadastro (Opcional)</Label>
-                  <Input
-                    id="signup-password"
-                    type="password"
-                    placeholder="Digite a senha fornecida para admin"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
+                  <div className="relative">
+                    <Input
+                      id="signup-password"
+                      type={showAdminPassword ? "text" : "password"}
+                      placeholder="Digite a senha fornecida para admin"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowAdminPassword(!showAdminPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {showAdminPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
                   <p className="text-xs text-muted-foreground">
                     Deixe em branco para criar conta como staff. Use a senha mestra para criar conta admin.
                   </p>
