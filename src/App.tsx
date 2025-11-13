@@ -21,7 +21,6 @@ import Auth from "./pages/Auth";
 import AccessPending from "./pages/AccessPending";
 import UserManagement from "./pages/UserManagement";
 import PendingApprovals from "./pages/PendingApprovals";
-import ClientDashboard from "./pages/ClientDashboard";
 import Reminders from "./pages/Reminders";
 import Pets from "./pages/Pets";
 import PetExpenses from "./pages/PetExpenses";
@@ -37,16 +36,6 @@ const AuthenticatedApp = () => {
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">Carregando...</div>
       </div>
-    );
-  }
-
-  // Clientes veem interface diferente
-  if (role === "client") {
-    return (
-      <Routes>
-        <Route path="/" element={<ClientDashboard />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
     );
   }
 
