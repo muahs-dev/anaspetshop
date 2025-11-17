@@ -71,6 +71,7 @@ const Auth = () => {
         options: {
           data: {
             full_name: fullName,
+            is_admin: true,
             phone: phone,
           },
           emailRedirectTo: `${window.location.origin}/`,
@@ -78,7 +79,7 @@ const Auth = () => {
       });
 
       if (error) throw error;
-      toast.success("Conta criada! Aguarde a aprovação de um administrador.");
+      toast.success("Conta de administrador criada com sucesso!");
     } catch (error: any) {
       console.error("Erro ao criar conta:", error);
       
