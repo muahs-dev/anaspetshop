@@ -30,39 +30,18 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  const { request } = event;
-  const url = new URL(request.url);
-
-  // Network-first strategy for JS/CSS modules to avoid React conflicts
-  if (request.url.includes('node_modules') || 
-      request.url.includes('.js') || 
-      request.url.includes('.tsx') ||
-      request.url.includes('.css')) {
-    event.respondWith(
-      fetch(request)
-        .catch(() => caches.match(request))
-    );
-    return;
-  }
-
-  // Cache-first for static assets
   event.respondWith(
-    caches.match(request)
-      .then((response) => {
-        if (response) {
-          return response;
-        }
-        return fetch(request).then((response) => {
-          if (!response || response.status !== 200) {
-            return response;
-          }
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME)
-            .then((cache) => {
-              cache.put(request, responseToCache);
-            });
-          return response;
+    fetch(event.request)
+      .then((networkResponse) => {
+        // Se a rede funcionou, atualiza o cache e retorna a resposta da rede
+        return caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, networkResponse.clone());
+          return networkResponse;
         });
+      })
+      .catch(() => {
+        // Se a rede falhar, tenta obter do cache
+        return caches.match(event.request);
       })
   );
 });

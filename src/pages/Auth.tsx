@@ -19,7 +19,6 @@ const Auth = () => {
   const [phone, setPhone] = useState("");
   const [showSignInPassword, setShowSignInPassword] = useState(false);
   const [showNewUserPassword, setShowNewUserPassword] = useState(false);
-  const [showAdminPassword, setShowAdminPassword] = useState(false);
 
   useEffect(() => {
     // Check if user is already logged in
@@ -66,17 +65,12 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      // Validar senha de administrador
-      const isAdminPassword = password === "010700mg";
-
       const { error } = await supabase.auth.signUp({
         email,
         password: newUserPassword,
         options: {
           data: {
             full_name: fullName,
-            is_admin: isAdminPassword,
-            user_type: isAdminPassword ? undefined : 'staff',
             phone: phone,
           },
           emailRedirectTo: `${window.location.origin}/`,
@@ -84,7 +78,7 @@ const Auth = () => {
       });
 
       if (error) throw error;
-      toast.success(isAdminPassword ? "Conta de administrador criada com sucesso!" : "Conta criada com sucesso!");
+      toast.success("Conta criada! Aguarde a aprovação de um administrador.");
     } catch (error: any) {
       console.error("Erro ao criar conta:", error);
       
@@ -214,30 +208,6 @@ const Auth = () => {
                       {showNewUserPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="signup-password">Senha de Cadastro (Opcional)</Label>
-                  <div className="relative">
-                    <Input
-                      id="signup-password"
-                      type={showAdminPassword ? "text" : "password"}
-                      placeholder="Digite a senha fornecida para admin"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowAdminPassword(!showAdminPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      {showAdminPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Deixe em branco para criar conta como staff. Use a senha mestra para criar conta admin.
-                  </p>
                 </div>
 
                 <Button type="submit" className="w-full" disabled={loading}>
