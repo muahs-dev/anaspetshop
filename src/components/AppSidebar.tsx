@@ -1,4 +1,4 @@
-import { Home, Users, Calendar, DollarSign, LogOut, Dog, UserCog, Instagram, MessageCircle, ChevronDown, Bell, UserCheck } from "lucide-react";
+import { Home, Users, Calendar, DollarSign, LogOut, Dog, UserCog, ChevronDown, Bell, UserCheck } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -315,28 +315,6 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter>
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Contato</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => window.open("https://wa.me/5571992409363", "_blank")} className="py-3">
-                  <MessageCircle className="h-4 w-4" />
-                  {!isCollapsed && <span>WhatsApp</span>}
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => window.open("https://www.instagram.com/marieanapetshop/", "_blank")} className="py-3">
-                  <Instagram className="h-4 w-4" />
-                  {!isCollapsed && <span>Instagram</span>}
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <Separator className="my-2" />
-
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={handleLogout} className="py-3 text-destructive hover:text-destructive hover:bg-destructive/10">
