@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
 import { Dog, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 const Auth = () => {
@@ -72,9 +71,7 @@ const Auth = () => {
             <CardTitle className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
               ANASPETSHOP
             </CardTitle>
-            <CardDescription className="text-base">
-              Entre com suas credenciais para acessar o sistema
-            </CardDescription>
+            
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -83,44 +80,20 @@ const Auth = () => {
               <Label htmlFor="signin-email" className="text-sm font-medium">
                 Email
               </Label>
-              <Input 
-                id="signin-email" 
-                type="email" 
-                placeholder="seu@email.com" 
-                value={email} 
-                onChange={e => setEmail(e.target.value)} 
-                required 
-                className="h-12 px-4 bg-background/50 border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-              />
+              <Input id="signin-email" type="email" placeholder="seu@email.com" value={email} onChange={e => setEmail(e.target.value)} required className="h-12 px-4 bg-background/50 border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="signin-password" className="text-sm font-medium">
                 Senha
               </Label>
               <div className="relative">
-                <Input 
-                  id="signin-password" 
-                  type={showSignInPassword ? "text" : "password"} 
-                  placeholder="••••••••" 
-                  value={password} 
-                  onChange={e => setPassword(e.target.value)} 
-                  required 
-                  className="h-12 px-4 pr-12 bg-background/50 border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                />
-                <button 
-                  type="button" 
-                  onClick={() => setShowSignInPassword(!showSignInPassword)} 
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
-                >
+                <Input id="signin-password" type={showSignInPassword ? "text" : "password"} placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} required className="h-12 px-4 pr-12 bg-background/50 border-border/50 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" />
+                <button type="button" onClick={() => setShowSignInPassword(!showSignInPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors">
                   {showSignInPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
               </div>
             </div>
-            <Button 
-              type="submit" 
-              className="w-full h-12 text-base font-semibold shadow-lg hover:shadow-xl transition-all" 
-              disabled={loading}
-            >
+            <Button type="submit" className="w-full h-12 text-base font-semibold shadow-lg hover:shadow-xl transition-all" disabled={loading}>
               {loading ? "Entrando..." : "Entrar"}
             </Button>
           </form>
